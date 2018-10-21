@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 
+import com.impetus.restexample.customclasses.RestException;
 import com.impetus.restexample.model.Track;
 
 /**
@@ -71,14 +72,17 @@ public class TrackService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Track getTrack(@QueryParam("title") String title) {
 		logger.debug(title);
-		return repository.getTrack(title);
+		Track track = repository.getTrack(title);
+		if (track == null)
+			throw new RestException("No Such Track Exist.");
+		return track;
 	}
 	
 	@GET
 	@Path("/check")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String checkException() {
-		throw new RuntimeException("Some Error Occurred.");
+		throw new RestException("Some Error Occurred.");
 	}
 
 }
